@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Linkedin, Twitter, Youtube, Instagram, Mail, MapPin, MessageCircle } from "lucide-react";
 import { Logo } from "./logo";
-import { NAV, SERVICES, COMPANY } from "@/lib/site-data";
+import { FOOTER_LINKS, SERVICES, COMPANY } from "@/lib/site-data";
 
 export function Footer() {
   return (
@@ -34,13 +34,13 @@ export function Footer() {
         <div>
           <h3 className="text-sm font-bold text-fg">Quick Links</h3>
           <ul className="mt-4 space-y-2.5">
-            {NAV.map((item) => (
-              <li key={"href" in item ? item.href : item.to}>
+            {FOOTER_LINKS.map((item) => (
+              <li key={item.label}>
                 {"href" in item ? (
                   <a
                     href={item.href}
-                    target="_blank"
-                    rel="noreferrer"
+                    target={item.href.startsWith("http") ? "_blank" : undefined}
+                    rel={item.href.startsWith("http") ? "noreferrer" : undefined}
                     className="text-sm text-fg-muted hover:text-primary"
                   >
                     {item.label}

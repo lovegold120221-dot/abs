@@ -17,15 +17,54 @@ export const COMPANY = {
 } as const;
 
 export const NAV = [
-  { label: "Home", to: "/" },
-  { label: "About", to: "/about" },
-  { label: "Services", to: "/services" },
-  { label: "Use Cases", to: "/use-cases" },
-  { label: "Case Studies", to: "/case-studies" },
+  {
+    label: "Company",
+    to: "/about",
+    children: [
+      { label: "About", to: "/about" },
+      { label: "Approach", to: "/approach" },
+      { label: "Careers", to: "/careers" },
+    ],
+  },
+  {
+    label: "Services",
+    to: "/services",
+    children: [
+      { label: "Overview", to: "/services" },
+      { label: "Strategy", href: "/services/ai-strategy" },
+      { label: "Custom AI", href: "/services/custom-ai" },
+      { label: "Automation", href: "/services/automation" },
+      { label: "Teams", href: "/services/dedicated-teams" },
+    ],
+  },
+  {
+    label: "Work",
+    to: "/use-cases",
+    children: [
+      { label: "Use Cases", to: "/use-cases" },
+      { label: "Case Studies", to: "/case-studies" },
+    ],
+  },
+  { label: "Insights", to: "/blog" },
+  { label: "Apps", href: "/abitech-apps/index.html" },
   { label: "Portfolio", href: "https://portfolio.abitech.site" },
-  { label: "Blog", to: "/blog" },
-  { label: "Our Approach", to: "/approach" },
+  { label: "Contact", to: "/contact" },
+] as const;
+
+export const FOOTER_LINKS = [
+  { label: "Company", to: "/about" },
+  { label: "Approach", to: "/approach" },
   { label: "Careers", to: "/careers" },
+  { label: "Services", to: "/services" },
+  { label: "Strategy", href: "/services/ai-strategy" },
+  { label: "Custom AI", href: "/services/custom-ai" },
+  { label: "Automation", href: "/services/automation" },
+  { label: "Teams", href: "/services/dedicated-teams" },
+  { label: "Work", to: "/use-cases" },
+  { label: "Case Studies", to: "/case-studies" },
+  { label: "Insights", to: "/blog" },
+  { label: "Apps", href: "/abitech-apps/index.html" },
+  { label: "Portfolio", href: "https://portfolio.abitech.site" },
   { label: "Contact", to: "/contact" },
 ] as const;
 

@@ -1,16 +1,66 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Globe, Menu, X, ArrowRight } from "lucide-react";
+import { ChevronDown, Globe, Menu, X, ArrowRight } from "lucide-react";
 import { Logo } from "./logo";
 import { Button } from "@/components/ui/button";
 import { NAV } from "@/lib/site-data";
 import { useUi } from "@/lib/ui-store";
 import { cn } from "@/lib/cn";
 
+type Item = (typeof NAV)[number];
+
+function itemHref(item: { to?: string; href?: string }) {
+  if ("href" in item && item.href) return item.href;
+  if ("to" in item && item.to) return item.to;
+  return "#";
+}
+
+function isExternal(href: string) {
+  return href.startsWith("http");
+}
+
+function isActive(item: Item, pathname: string) {
+  const own = "to" in item ? item.to : "";
+  const kids = "children" in item ? item.children : [];
+  const paths = [own, ...kids.map((child) => itemHref(child))].filter(Boolean);
+  return paths.some((path) => path !== "/" && (pathname === path || pathname.startsWith(`${path}/`)));
+}
+
+function MenuLink({
+  item,
+  className,
+  children,
+}: {
+  item: { label: string; to?: string; href?: string };
+  className?: string;
+  children?: ReactNode;
+}) {
+  const href = itemHref(item);
+  const label = children ?? item.label;
+  if ("to" in item && item.to && !("href" in item && item.href)) {
+    return (
+      <Link to={item.to} className={className}>
+        {label}
+      </Link>
+    );
+  }
+  return (
+    <a
+      href={href}
+      className={className}
+      target={isExternal(href) ? "_blank" : undefined}
+      rel={isExternal(href) ? "noreferrer" : undefined}
+    >
+      {label}
+    </a>
+  );
+}
+
 export function Header() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const openConsult = useUi((s) => s.openConsult);
   const [open, setOpen] = useState(false);
+  const [expanded, setExpanded] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -22,6 +72,7 @@ export function Header() {
 
   useEffect(() => {
     setOpen(false);
+    setExpanded(null);
   }, [pathname]);
 
   useEffect(() => {
@@ -42,38 +93,38 @@ export function Header() {
         <Logo />
         <nav className="hidden lg:flex items-center gap-0.5" aria-label="Primary">
           {NAV.map((item) => {
-            if ("href" in item) {
+            const active = isActive(item, pathname);
+            const linkClass = cn(
+              "relative flex items-center gap-1 px-2.5 py-2 text-[13.5px] font-medium rounded-md transition-colors",
+              active ? "text-primary" : "text-fg-muted hover:text-fg",
+              "children" in item ? "pr-1" : "",
+            );
+            if ("children" in item) {
               return (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="relative px-2 py-2 text-[13px] font-medium rounded-md text-fg-muted transition-colors hover:text-fg xl:px-2.5 xl:text-[13.5px]"
-                >
-                  {item.label}
-                </a>
+                <div key={item.label} className="group relative">
+                  <span className="relative flex">
+                    <MenuLink item={item} className={linkClass}>
+                      {item.label}
+                    </MenuLink>
+                    <span className="flex items-center" aria-hidden="true">
+                      <ChevronDown className="size-3.5 opacity-60 transition-transform duration-200 group-hover:rotate-180" />
+                    </span>
+                  </span>
+                  <div className="invisible absolute left-1/2 top-full -translate-x-1/2 translate-y-1 pt-2 opacity-0 transition-all duration-150 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+                    <div className="min-w-52 overflow-hidden rounded-xl border border-border bg-bg py-1.5 shadow-lg">
+                      {item.children.map((child) => (
+                        <MenuLink
+                          key={child.label}
+                          item={child}
+                          className="block px-4 py-2.5 text-[13.5px] font-medium text-fg-muted transition-colors hover:bg-bg-soft hover:text-fg"
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
               );
             }
-            const active =
-              item.to === "/"
-                ? pathname === "/"
-                : pathname === item.to || pathname.startsWith(`${item.to}/`);
-            return (
-              <Link
-                key={item.to}
-                to={item.to}
-                className={cn(
-                  "relative px-2 py-2 text-[13px] font-medium rounded-md transition-colors xl:px-2.5 xl:text-[13.5px]",
-                  active ? "text-primary" : "text-fg-muted hover:text-fg",
-                )}
-              >
-                {item.label}
-                {active ? (
-                  <span className="absolute left-2.5 right-2.5 -bottom-0.5 h-0.5 rounded-full bg-primary" />
-                ) : null}
-              </Link>
-            );
+            return <MenuLink key={item.label} item={item} className={linkClass} />;
           })}
         </nav>
         <div className="flex items-center gap-2">
@@ -103,26 +154,45 @@ export function Header() {
 
       {open ? (
         <div className="lg:hidden border-t border-border bg-bg">
-          <nav className="mx-auto flex max-w-[1240px] flex-col px-5 py-4" aria-label="Mobile">
+          <nav className="mx-auto flex max-w-[1240px] flex-col px-5 py-2" aria-label="Mobile">
             {NAV.map((item) =>
-              "href" in item ? (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex min-h-12 items-center border-b border-border/70 text-[15px] font-medium text-fg"
-                >
-                  {item.label}
-                </a>
+              "children" in item ? (
+                <div key={item.label} className="border-b border-border/70">
+                  <div className="flex min-h-12 items-center justify-between">
+                    <span className="flex-1 py-3 text-[15px] font-medium text-fg">
+                      <MenuLink item={item} />
+                    </span>
+                    <button
+                      type="button"
+                      aria-label={`Expand ${item.label}`}
+                      aria-expanded={expanded === item.label}
+                      className="inline-flex size-10 items-center justify-center rounded-full text-fg-muted hover:bg-bg-soft"
+                      onClick={() => setExpanded((current) => (current === item.label ? null : item.label))}
+                    >
+                      <ChevronDown
+                        className={cn("size-4 transition-transform", expanded === item.label && "rotate-180")}
+                      />
+                    </button>
+                  </div>
+                  {expanded === item.label ? (
+                    <div className="pb-2 pl-3">
+                      {item.children.map((child) => (
+                        <MenuLink
+                          key={child.label}
+                          item={child}
+                          className="flex min-h-11 items-center text-sm font-medium text-fg-muted"
+                        />
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
               ) : (
-                <Link
-                  key={item.to}
-                  to={item.to}
+                <span
+                  key={item.label}
                   className="flex min-h-12 items-center border-b border-border/70 text-[15px] font-medium text-fg"
                 >
-                  {item.label}
-                </Link>
+                  <MenuLink item={item} />
+                </span>
               ),
             )}
           </nav>

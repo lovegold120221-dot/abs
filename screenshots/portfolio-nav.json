@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "ABI Tech | AI Implementation & Automation Company in Ortigas, Philippines",
+      "hasCanvas": false,
+      "bodyTextLen": 4097,
+      "bodyTextHash": "14189e20db0d3217fba1edd8e961d746cfab79fc52afad721d7a0a91b940f5e0",
+      "bodyTextPrefix": "ABI Tech AI Business Implementation Technology Home About Servic",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/portfolio-nav.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "ABI Tech | AI Implementation & Automation Company in Ortigas, Philippines",
+      "hasCanvas": false,
+      "bodyTextLen": 3912,
+      "bodyTextHash": "ff78f0d0988636679846d99c1294d30ce03c68b66564ea82972ca65b83f711e0",
+      "bodyTextPrefix": "ABI Tech Let's Talk AI STRATEGY. REAL IMPLEMENTATION. MEASURABLE",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/portfolio-nav-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/portfolio-nav.json"
+}

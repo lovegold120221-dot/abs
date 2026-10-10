@@ -35,10 +35,21 @@ export function Footer() {
           <h3 className="text-sm font-bold text-fg">Quick Links</h3>
           <ul className="mt-4 space-y-2.5">
             {NAV.map((item) => (
-              <li key={item.to}>
-                <Link to={item.to} className="text-sm text-fg-muted hover:text-primary">
-                  {item.label}
-                </Link>
+              <li key={"href" in item ? item.href : item.to}>
+                {"href" in item ? (
+                  <a
+                    href={item.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-sm text-fg-muted hover:text-primary"
+                  >
+                    {item.label}
+                  </a>
+                ) : (
+                  <Link to={item.to} className="text-sm text-fg-muted hover:text-primary">
+                    {item.label}
+                  </Link>
+                )}
               </li>
             ))}
           </ul>

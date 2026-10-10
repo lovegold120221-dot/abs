@@ -22,6 +22,7 @@ export const NAV = [
   { label: "Services", to: "/services" },
   { label: "Use Cases", to: "/use-cases" },
   { label: "Case Studies", to: "/case-studies" },
+  { label: "Portfolio", href: "https://portfolio.abitech.site" },
   { label: "Blog", to: "/blog" },
   { label: "Our Approach", to: "/approach" },
   { label: "Careers", to: "/careers" },

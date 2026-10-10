@@ -42,6 +42,19 @@ export function Header() {
         <Logo />
         <nav className="hidden lg:flex items-center gap-0.5" aria-label="Primary">
           {NAV.map((item) => {
+            if ("href" in item) {
+              return (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="relative px-2 py-2 text-[13px] font-medium rounded-md text-fg-muted transition-colors hover:text-fg xl:px-2.5 xl:text-[13.5px]"
+                >
+                  {item.label}
+                </a>
+              );
+            }
             const active =
               item.to === "/"
                 ? pathname === "/"
@@ -91,15 +104,27 @@ export function Header() {
       {open ? (
         <div className="lg:hidden border-t border-border bg-bg">
           <nav className="mx-auto flex max-w-[1240px] flex-col px-5 py-4" aria-label="Mobile">
-            {NAV.map((item) => (
-              <Link
-                key={item.to}
-                to={item.to}
-                className="flex min-h-12 items-center border-b border-border/70 text-[15px] font-medium text-fg"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {NAV.map((item) =>
+              "href" in item ? (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex min-h-12 items-center border-b border-border/70 text-[15px] font-medium text-fg"
+                >
+                  {item.label}
+                </a>
+              ) : (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className="flex min-h-12 items-center border-b border-border/70 text-[15px] font-medium text-fg"
+                >
+                  {item.label}
+                </Link>
+              ),
+            )}
           </nav>
         </div>
       ) : null}
